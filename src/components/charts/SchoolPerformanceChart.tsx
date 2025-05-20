@@ -11,10 +11,9 @@ interface SchoolPerformanceChartProps {
 const SchoolPerformanceChart: React.FC<SchoolPerformanceChartProps> = ({ schools, title }) => {
   // Prepare data for the chart
   const data = schools.map(school => ({
-    name: school.name.length > 20 ? `${school.name.substring(0, 18)}...` : school.name,
-    fullName: school.name,
-    performance: school.averagePerformance,
-    code: school.code
+    name: school.nome.length > 20 ? `${school.nome.substring(0, 18)}...` : school.nome,
+    fullName: school.nome,
+    performance: school.ano_da_ultima_reforma,
   }));
 
   return (
