@@ -1,189 +1,266 @@
-import { Student, Teacher, School, SocioeconomicFactor } from '../types';
+import { School, PerformanceIndicator, InfrastructureData, PerformanceBySubject, RegionData } from '../types';
 
-export const mockStudents: Student[] = [
+// Mock school data
+export const schools: School[] = [
   {
     id: '1',
-    name: 'Ana Silva',
-    grade: '6th',
-    school: 'Escola Municipal Paulo Freire',
-    gender: 'female',
-    performanceData: [
-      { subject: 'Mathematics', score: 85, semester: '1st', year: 2023 },
-      { subject: 'Portuguese', score: 78, semester: '1st', year: 2023 },
-      { subject: 'Science', score: 92, semester: '1st', year: 2023 },
-      { subject: 'History', score: 75, semester: '1st', year: 2023 },
-      { subject: 'Geography', score: 80, semester: '1st', year: 2023 },
-    ],
+    name: 'Escola Municipal Maria da Silva',
+    code: 'EM001',
+    hasInternet: true,
+    hasLibrary: true,
+    hasLaboratory: false,
+    hasComputerLab: true,
+    region: 'Norte',
+    city: 'Manaus',
+    state: 'AM',
+    averagePerformance: 72.8,
+    numberOfStudents: 520,
+    performanceBySkill: [
+      {
+        skillId: '1',
+        skillCode: 'H01',
+        subject: 'math',
+        description: 'Resolver situações-problema envolvendo números naturais.',
+        percentCorrect: 75.2
+      },
+      {
+        skillId: '2',
+        skillCode: 'H02',
+        subject: 'math',
+        description: 'Reconhecer a representação decimal de medida de comprimento.',
+        percentCorrect: 68.7
+      },
+      {
+        skillId: '3',
+        skillCode: 'H03',
+        subject: 'portuguese',
+        description: 'Identificar elementos da narrativa em textos.',
+        percentCorrect: 82.3
+      }
+    ]
   },
   {
     id: '2',
-    name: 'Pedro Santos',
-    grade: '7th',
-    school: 'Escola Municipal Paulo Freire',
-    gender: 'male',
-    performanceData: [
-      { subject: 'Mathematics', score: 65, semester: '1st', year: 2023 },
-      { subject: 'Portuguese', score: 72, semester: '1st', year: 2023 },
-      { subject: 'Science', score: 68, semester: '1st', year: 2023 },
-      { subject: 'History', score: 70, semester: '1st', year: 2023 },
-      { subject: 'Geography', score: 75, semester: '1st', year: 2023 },
-    ],
+    name: 'Escola Estadual José Pereira',
+    code: 'EE002',
+    hasInternet: true,
+    hasLibrary: true,
+    hasLaboratory: true,
+    hasComputerLab: true,
+    region: 'Sudeste',
+    city: 'São Paulo',
+    state: 'SP',
+    averagePerformance: 81.5,
+    numberOfStudents: 830,
+    performanceBySkill: [
+      {
+        skillId: '1',
+        skillCode: 'H01',
+        subject: 'math',
+        description: 'Resolver situações-problema envolvendo números naturais.',
+        percentCorrect: 84.7
+      },
+      {
+        skillId: '2',
+        skillCode: 'H02',
+        subject: 'math',
+        description: 'Reconhecer a representação decimal de medida de comprimento.',
+        percentCorrect: 79.4
+      },
+      {
+        skillId: '3',
+        skillCode: 'H03',
+        subject: 'portuguese',
+        description: 'Identificar elementos da narrativa em textos.',
+        percentCorrect: 85.3
+      }
+    ]
   },
   {
     id: '3',
-    name: 'Carolina Oliveira',
-    grade: '8th',
-    school: 'Escola Municipal Anísio Teixeira',
-    gender: 'female',
-    performanceData: [
-      { subject: 'Mathematics', score: 92, semester: '1st', year: 2023 },
-      { subject: 'Portuguese', score: 95, semester: '1st', year: 2023 },
-      { subject: 'Science', score: 88, semester: '1st', year: 2023 },
-      { subject: 'History', score: 90, semester: '1st', year: 2023 },
-      { subject: 'Geography', score: 93, semester: '1st', year: 2023 },
-    ],
+    name: 'Colégio Municipal Pedro Santos',
+    code: 'CM003',
+    hasInternet: false,
+    hasLibrary: true,
+    hasLaboratory: false,
+    hasComputerLab: false,
+    region: 'Nordeste',
+    city: 'Recife',
+    state: 'PE',
+    averagePerformance: 64.2,
+    numberOfStudents: 375,
+    performanceBySkill: [
+      {
+        skillId: '1',
+        skillCode: 'H01',
+        subject: 'math',
+        description: 'Resolver situações-problema envolvendo números naturais.',
+        percentCorrect: 58.3
+      },
+      {
+        skillId: '2',
+        skillCode: 'H02',
+        subject: 'math',
+        description: 'Reconhecer a representação decimal de medida de comprimento.',
+        percentCorrect: 61.8
+      },
+      {
+        skillId: '3',
+        skillCode: 'H03',
+        subject: 'portuguese',
+        description: 'Identificar elementos da narrativa em textos.',
+        percentCorrect: 72.5
+      }
+    ]
   },
   {
     id: '4',
-    name: 'Marcos Souza',
-    grade: '9th',
-    school: 'Escola Municipal Anísio Teixeira',
-    gender: 'male',
-    performanceData: [
-      { subject: 'Mathematics', score: 75, semester: '1st', year: 2023 },
-      { subject: 'Portuguese', score: 68, semester: '1st', year: 2023 },
-      { subject: 'Science', score: 72, semester: '1st', year: 2023 },
-      { subject: 'History', score: 65, semester: '1st', year: 2023 },
-      { subject: 'Geography', score: 70, semester: '1st', year: 2023 },
-    ],
+    name: 'Escola Municipal Ana Luiza',
+    code: 'EM004',
+    hasInternet: true,
+    hasLibrary: false,
+    hasLaboratory: false,
+    hasComputerLab: true,
+    region: 'Sul',
+    city: 'Porto Alegre',
+    state: 'RS',
+    averagePerformance: 76.9,
+    numberOfStudents: 420,
+    performanceBySkill: [
+      {
+        skillId: '1',
+        skillCode: 'H01',
+        subject: 'math',
+        description: 'Resolver situações-problema envolvendo números naturais.',
+        percentCorrect: 77.1
+      },
+      {
+        skillId: '2',
+        skillCode: 'H02',
+        subject: 'math',
+        description: 'Reconhecer a representação decimal de medida de comprimento.',
+        percentCorrect: 74.6
+      },
+      {
+        skillId: '3',
+        skillCode: 'H03',
+        subject: 'portuguese',
+        description: 'Identificar elementos da narrativa em textos.',
+        percentCorrect: 79.2
+      }
+    ]
   },
   {
     id: '5',
-    name: 'Juliana Costa',
-    grade: '6th',
-    school: 'Escola Municipal Darcy Ribeiro',
-    gender: 'female',
-    performanceData: [
-      { subject: 'Mathematics', score: 88, semester: '1st', year: 2023 },
-      { subject: 'Portuguese', score: 92, semester: '1st', year: 2023 },
-      { subject: 'Science', score: 90, semester: '1st', year: 2023 },
-      { subject: 'History', score: 85, semester: '1st', year: 2023 },
-      { subject: 'Geography', score: 87, semester: '1st', year: 2023 },
-    ],
-  },
+    name: 'Colégio Estadual Roberto Alves',
+    code: 'CE005',
+    hasInternet: true,
+    hasLibrary: true,
+    hasLaboratory: true,
+    hasComputerLab: true,
+    region: 'Centro-Oeste',
+    city: 'Brasília',
+    state: 'DF',
+    averagePerformance: 79.3,
+    numberOfStudents: 950,
+    performanceBySkill: [
+      {
+        skillId: '1',
+        skillCode: 'H01',
+        subject: 'math',
+        description: 'Resolver situações-problema envolvendo números naturais.',
+        percentCorrect: 80.2
+      },
+      {
+        skillId: '2',
+        skillCode: 'H02',
+        subject: 'math',
+        description: 'Reconhecer a representação decimal de medida de comprimento.',
+        percentCorrect: 77.9
+      },
+      {
+        skillId: '3',
+        skillCode: 'H03',
+        subject: 'portuguese',
+        description: 'Identificar elementos da narrativa em textos.',
+        percentCorrect: 81.8
+      }
+    ]
+  }
 ];
 
-export const mockTeachers: Teacher[] = [
+// Performance indicators for the dashboard
+export const performanceIndicators: PerformanceIndicator[] = [
   {
-    id: '1',
-    name: 'Roberto Mendes',
-    qualification: 'Master in Mathematics',
-    experience: 12,
-    subjects: ['Mathematics'],
-    schoolId: '1',
+    title: 'Média Geral',
+    value: 74.9,
+    previousValue: 72.3,
+    unit: '%',
+    trend: 'up'
   },
   {
-    id: '2',
-    name: 'Carla Nunes',
-    qualification: 'Bachelor in Portuguese Literature',
-    experience: 8,
-    subjects: ['Portuguese'],
-    schoolId: '1',
+    title: 'Escolas Analisadas',
+    value: 125,
+    previousValue: 100,
+    unit: '',
+    trend: 'up'
   },
   {
-    id: '3',
-    name: 'Fernando Azevedo',
-    qualification: 'PhD in Chemistry',
-    experience: 15,
-    subjects: ['Science'],
-    schoolId: '2',
-  },
-  {
-    id: '4',
-    name: 'Mariana Lima',
-    qualification: 'Bachelor in History',
-    experience: 5,
-    subjects: ['History', 'Geography'],
-    schoolId: '2',
-  },
-  {
-    id: '5',
-    name: 'Paulo César',
-    qualification: 'Master in Education',
-    experience: 20,
-    subjects: ['Mathematics', 'Science'],
-    schoolId: '3',
-  },
+    title: 'Habilidades Acompanhadas',
+    value: 24,
+    previousValue: 20,
+    unit: '',
+    trend: 'up'
+  }
 ];
 
-export const mockSchools: School[] = [
-  {
-    id: '1',
-    name: 'Escola Municipal Paulo Freire',
-    location: 'São Paulo - Capital',
-    infrastructure: {
-      hasLibrary: true,
-      hasLaboratory: false,
-      hasInternet: true,
-      hasComputerLab: true,
-      hasCafeteria: true,
-      condition: 'good',
-    },
-    totalStudents: 850,
-    region: 'Urban',
-  },
-  {
-    id: '2',
-    name: 'Escola Municipal Anísio Teixeira',
-    location: 'São Paulo - Região Metropolitana',
-    infrastructure: {
-      hasLibrary: true,
-      hasLaboratory: true,
-      hasInternet: true,
-      hasComputerLab: true,
-      hasCafeteria: true,
-      condition: 'excellent',
-    },
-    totalStudents: 1200,
-    region: 'Urban',
-  },
-  {
-    id: '3',
-    name: 'Escola Municipal Darcy Ribeiro',
-    location: 'São Paulo - Interior',
-    infrastructure: {
-      hasLibrary: false,
-      hasLaboratory: false,
-      hasInternet: false,
-      hasComputerLab: false,
-      hasCafeteria: true,
-      condition: 'poor',
-    },
-    totalStudents: 320,
-    region: 'Rural',
-  },
+// Infrastructure data for pie chart
+export const infrastructureData: InfrastructureData[] = [
+  { label: 'Internet', value: 78.4, color: '#3B82F6' },
+  { label: 'Biblioteca', value: 65.6, color: '#10B981' },
+  { label: 'Laboratório', value: 42.3, color: '#F59E0B' },
+  { label: 'Lab. Informática', value: 58.7, color: '#8B5CF6' }
 ];
 
-export const mockSocioeconomicFactors: SocioeconomicFactor[] = [
-  {
-    region: 'São Paulo - Capital',
-    averageIncome: 3200,
-    unemploymentRate: 7.5,
-    accessToTechnology: 85,
-    transportQuality: 'good',
-  },
-  {
-    region: 'São Paulo - Região Metropolitana',
-    averageIncome: 2800,
-    unemploymentRate: 9.2,
-    accessToTechnology: 75,
-    transportQuality: 'adequate',
-  },
-  {
-    region: 'São Paulo - Interior',
-    averageIncome: 2100,
-    unemploymentRate: 12.5,
-    accessToTechnology: 45,
-    transportQuality: 'poor',
-  },
+// Performance by subject for the bar chart
+export const performanceBySubject: PerformanceBySubject[] = [
+  { subject: 'Matemática', performance: 68.7, color: '#3B82F6' },
+  { subject: 'Português', performance: 73.2, color: '#10B981' },
+  { subject: 'Ciências', performance: 70.5, color: '#F59E0B' },
+  { subject: 'História', performance: 75.8, color: '#8B5CF6' },
+  { subject: 'Geografia', performance: 72.3, color: '#EC4899' }
 ];
+
+// Region data for the map
+export const regionData: RegionData[] = [
+  { name: 'Norte', performance: 67.3 },
+  { name: 'Nordeste', performance: 65.8 },
+  { name: 'Centro-Oeste', performance: 72.1 },
+  { name: 'Sudeste', performance: 79.4 },
+  { name: 'Sul', performance: 77.5 }
+];
+
+// Function to filter schools by criteria
+export const filterSchools = (
+  query: string = '',
+  hasInternet?: boolean,
+  hasLibrary?: boolean,
+  region?: string
+): School[] => {
+  return schools.filter(school => {
+    const matchesQuery = query === '' || 
+      school.name.toLowerCase().includes(query.toLowerCase()) || 
+      school.code.toLowerCase().includes(query.toLowerCase());
+    
+    const matchesInternet = hasInternet === undefined || school.hasInternet === hasInternet;
+    const matchesLibrary = hasLibrary === undefined || school.hasLibrary === hasLibrary;
+    const matchesRegion = region === undefined || school.region === region;
+    
+    return matchesQuery && matchesInternet && matchesLibrary && matchesRegion;
+  });
+};
+
+// Get a school by ID
+export const getSchoolById = (id: string): School | undefined => {
+  return schools.find(school => school.id === id);
+};

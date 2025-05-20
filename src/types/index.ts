@@ -1,94 +1,80 @@
-export interface Student {
-  id: string;
-  name: string;
-  grade: string;
-  school: string;
-  gender: 'male' | 'female' | 'other';
-  performanceData: SubjectPerformance[];
-  attendance: number; // percentage
-  specialNeeds?: {
-    diagnosis: string;
-    hasSpecializedSupport: boolean;
-  };
-}
-
-export interface SubjectPerformance {
-  subject: string;
-  score: number;
-  semester: string;
-  year: number;
-}
-
-export interface Teacher {
-  id: string;
-  name: string;
-  qualification: string;
-  experience: number;
-  subjects: string[];
-  schoolId: string;
-  graduationYear: number;
-  teachingMethods: string[];
-  evaluationMethods: string[];
-  turnoverRate?: number;
-}
+// Type definitions for the application
 
 export interface School {
   id: string;
   name: string;
-  location: string;
-  infrastructure: Infrastructure;
-  totalStudents: number;
+  code: string;
+  hasInternet: boolean;
+  hasLibrary: boolean;
+  hasLaboratory: boolean;
+  hasComputerLab: boolean;
   region: string;
-  educationalPrograms: string[];
-  mealProgram: {
-    available: boolean;
-    quality: 'poor' | 'adequate' | 'good' | 'excellent';
-    mealsPerDay: number;
-  };
-  teacherTurnoverRate: number;
+  city: string;
+  state: string;
+  averagePerformance: number;
+  numberOfStudents: number;
+  performanceBySkill: SkillPerformance[];
+  infrastructure: Infrastructure;
 }
 
 export interface Infrastructure {
-  hasLibrary: boolean;
-  hasLaboratory: boolean;
-  hasInternet: boolean;
-  hasComputerLab: boolean;
-  hasCafeteria: boolean;
-  hasSportsField: boolean;
-  hasAirConditioning: boolean;
-  hasAccessibility: boolean;
-  hasRecreationArea: boolean;
-  condition: 'poor' | 'adequate' | 'good' | 'excellent';
-  maintenanceStatus: 'poor' | 'adequate' | 'good' | 'excellent';
-  lighting: 'poor' | 'adequate' | 'good' | 'excellent';
-  furniture: 'poor' | 'adequate' | 'good' | 'excellent';
+  portugueseTeachers: number;
+  mathTeachers: number;
+  scienceTeachers: number;
+  lastRenovationYear: number;
+  availableCourts: number;
+  libraryFunctional: boolean;
+  computerLabFunctional: boolean;
+  studentInternet: boolean;
+  mobileProjects: boolean;
+  teacherShortage: boolean;
+  airConditioned: boolean;
+  adequateLighting: boolean;
+  waterFountains: boolean;
+  accessibilityLevel: 'Nenhuma' | 'Mediana' | 'Alta';
+  hasProjects: boolean;
+  hasRecreationAreas: boolean;
+  shiftPerformanceDifference: boolean;
 }
 
-export interface SocioeconomicFactor {
-  region: string;
-  averageIncome: number;
-  unemploymentRate: number;
-  accessToTechnology: number;
-  transportQuality: 'poor' | 'adequate' | 'good' | 'excellent';
+export interface SkillPerformance {
+  skillId: string;
+  skillCode: string;
+  subject: 'math' | 'portuguese' | 'science' | 'history' | 'geography';
+  description: string;
+  percentCorrect: number;
+  participationRate: number;
+  totalStudents: number;
+  evaluatedStudents: number;
 }
 
-export interface PerformanceAnalytics {
-  averageScore: number;
-  medianScore: number;
-  topPerformers: number;
-  lowPerformers: number;
-  performanceTrend: 'decreasing' | 'stable' | 'increasing';
-  correlations: {
-    infrastructureImpact: number;
-    teacherQualificationImpact: number;
-    attendanceImpact: number;
-    socioeconomicImpact: number;
-  };
+export interface PerformanceIndicator {
+  title: string;
+  value: number;
+  previousValue: number;
+  unit: string;
+  trend: 'up' | 'down' | 'neutral';
 }
 
-export interface User {
-  id: string;
+export interface InfrastructureData {
+  label: string;
+  value: number;
+  color: string;
+}
+
+export interface PerformanceBySubject {
+  subject: string;
+  performance: number;
+  color: string;
+}
+
+export interface RegionData {
   name: string;
-  email: string;
-  role: 'admin' | 'viewer';
+  performance: number;
+}
+
+export interface ComparisonData {
+  factor: string;
+  school1Value: number;
+  school2Value: number;
 }
