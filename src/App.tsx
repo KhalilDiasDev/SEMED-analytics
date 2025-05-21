@@ -4,6 +4,7 @@ import Dashboard from './pages/Dashboard';
 import SchoolComparison from './pages/SchoolComparison';
 import SkillAnalysis from './pages/SkillAnalysis';
 import DataUpload from './pages/DataUpload';
+import Schools from './pages/Schools';
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
       <Layout>
         <Routes>
           <Route path="/" element={<Dashboard />} />
+          <Route path="/schools" element={<Schools />} />
           <Route path="/comparison" element={<SchoolComparison />} />
           <Route path="/skills" element={<SkillAnalysis />} />
           <Route path="/upload" element={<DataUpload />} />

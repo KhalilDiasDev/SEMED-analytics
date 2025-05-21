@@ -3,28 +3,27 @@ import StatCard from '../components/ui/StatCard';
 import PerformanceBarChart from '../components/charts/BarChart';
 import InfrastructurePieChart from '../components/charts/PieChart';
 import SchoolPerformanceChart from '../components/charts/SchoolPerformanceChart';
-import SchoolCard from '../components/ui/SchoolCard';
-import Card from '../components/ui/Card';
 import { Search } from 'lucide-react';
 import {  performanceIndicators, infrastructureData, performanceBySubject} from '../data/mockData';
 import { supabase } from '../libs/supabase';
+import { School } from '../types';
 
 const Dashboard: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   
-  const [schools, setSchools] = useState<any[]>([]);
+  const [schools, setSchools] = useState<School[]>([]);
    
     useEffect(() => {
       const fetchSchools = async () => {
         const { data, error } = await supabase.from('escolas').select('*');
-        console.log('daaata',data);
-        
         if (error) console.error('Erro ao buscar dados:', error);
         else setSchools(data);
       };
       fetchSchools();
     }, []);
   
+    console.log(schools);
+    
   
   return (
     <div className="space-y-6">
@@ -82,17 +81,7 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {schools.length > 0 ? (
-            schools.map(schools => (
-              <SchoolCard key={schools.nome} school={schools} />
-            ))
-          ) : (
-            <Card className="col-span-full p-8 text-center">
-              <p className="text-gray-500">Nenhuma escola encontrada com os critérios de busca.</p>
-            </Card>
-          )}
-        </div>
+       
       </div>
     </div>
   );

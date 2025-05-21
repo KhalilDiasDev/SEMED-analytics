@@ -25,6 +25,17 @@ const Navbar: React.FC = () => {
                 Dashboard
               </NavLink>
               <NavLink 
+                to="/schools" 
+                className={({ isActive }) => 
+                  isActive 
+                    ? "border-b-2 border-blue-500 text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium"
+                    : "border-b-2 border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium"
+                }
+              >
+                   <Home className="h-4 w-4 mr-1" />
+                Schools
+              </NavLink>
+              <NavLink 
                 to="/comparison" 
                 className={({ isActive }) => 
                   isActive 

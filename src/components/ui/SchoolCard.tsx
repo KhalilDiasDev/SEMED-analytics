@@ -49,7 +49,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school }) => {
       <div className="grid grid-cols-2 gap-2 text-sm">
         <Feature icon={Wifi} label="Internet" active={school.acess_internet} />
         <Feature icon={BookOpen} label="Biblioteca" active={school.biblioteca} />
-        <Feature icon={FlaskConical} label="Lab. Ciências" active={true} />
+        <Feature icon={FlaskConical} label="Lab. Ciências" active={school.lab_info} />
         <Feature icon={Monitor} label="Lab. Informática" active={school.lab_info} />
         <Feature icon={Smartphone} label="Projetos com celular" active={school.projetos_usam_celular} />
         <Feature icon={Users} label="Carência de professores" active={school.carencia_de_professor} />
@@ -63,12 +63,7 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school }) => {
       </div>
 
       <div className="mt-4 flex justify-between">
-        <Link to={`/schools/${school.nome}`} className="text-blue-600 hover:text-blue-800 text-sm font-medium">
-          Ver detalhes
-        </Link>
-        <Link to={`/comparison?school1=${school.nome}`} className="text-green-600 hover:text-green-800 text-sm font-medium">
-          Comparar
-        </Link>
+       
       </div>
     </Card>
   );
