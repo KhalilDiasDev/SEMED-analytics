@@ -10,10 +10,11 @@ import {
 } from '../utils/uploadUtils';
 import { FileState, FileType } from '../types/upload';
 
-// Configuração do Supabase
-const supabaseUrl = 'https://uzbulczrtaxrdzxfnxnq.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV6YnVsY3pydGF4cmR6eGZueG5xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcxMzcxNjIsImV4cCI6MjA2MjcxMzE2Mn0.XPgWhLoONAZWEzRQx2wOyTi38udzFFXvnc8MNj4XH-o';
-const supabase = createClient(supabaseUrl, supabaseKey);
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_ANON_KEY
+);
+
 
 export const useFileUpload = () => {
   const [files, setFiles] = useState<FileState[]>([]);
