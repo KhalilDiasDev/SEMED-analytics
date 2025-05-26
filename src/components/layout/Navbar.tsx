@@ -9,8 +9,8 @@ const Navbar: React.FC = () => {
         <div className="flex justify-between h-16">
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
-              <BarChart2 className="h-8 w-8 text-blue-600" />
-              <span className="ml-2 text-xl font-bold text-gray-900">EduInsights</span>
+              <img src='https://www.oriximina-ecomunidade.yantec.com.br/assets/images/oriximina.png' width={25}/>
+              <span className="ml-2 text-xl font-bold text-gray-900">SEMED Analitics</span>
             </div>
             <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
               <NavLink 

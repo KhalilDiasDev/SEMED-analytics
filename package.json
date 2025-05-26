@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.49.7",
+    "antd": "^5.25.3",
     "lucide-react": "^0.344.0",
     "papaparse": "^5.5.3",
     "react": "^18.3.1",
