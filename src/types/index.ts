@@ -1,7 +1,7 @@
 // Type definitions for the application
 
 export interface School {
-  nome: string;
+nome: string;
   profe_lingua_portuguesa: number;
   profe_matematica: number;
   profe_ciencias: number;
@@ -15,7 +15,7 @@ export interface School {
   ar_condicionado: boolean;
   iluminacao: boolean;
   bebedouro: boolean;
-  acessibilidade: string;
+  acessibilidade: boolean;
   projetos_externos: boolean;
   areas_recreativas: boolean;
   dif_rendimento_entre_turnos: boolean;
@@ -42,14 +42,37 @@ export interface Infrastructure {
 }
 
 export interface SkillPerformance {
-  skillId: string;
-  skillCode: string;
-  subject: 'math' | 'portuguese' | 'science' | 'history' | 'geography';
-  description: string;
-  percentCorrect: number;
-  participationRate: number;
-  totalStudents: number;
-  evaluatedStudents: number;
+  escola: string;
+  componente_curricular: string;
+  etapa: string;
+  previstos: number;
+  avaliados: number;
+  participacao: number;
+  defasagem: number;
+  aprendizado_intermediario: number;
+  aprendizado_adequado: number;
+  acerto_total: number;
+  h01: number;
+  h02: number;
+  h03: number;
+  h04: number;
+  h05: number;
+  h06: number;
+  h07: number;
+  h08: number;
+  h09: number;
+  h10: number;
+  h11: number;
+  h12: number;
+  h13: number;
+  h14: number;
+  h15: number;
+  h16: number;
+  h17: number;
+  h18: number;
+  h19: number;
+  h20: number;
+  h21: number;
 }
 
 export interface PerformanceIndicator {

@@ -1,98 +1,195 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Card from '../components/ui/Card';
-import { schools } from '../data/mockData';
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 
-type Subject = 'all' | 'math' | 'portuguese' | 'science' | 'history' | 'geography';
+import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
+import { School, SkillPerformance } from '../types';
+import { supabase } from '../libs/supabase';
+
+
+type Subject = 'all' | 'Língua Portuguesa' | 'Matemática' | 'Ciências';
 
 const SkillAnalysis: React.FC = () => {
   const [selectedSubject, setSelectedSubject] = useState<Subject>('all');
+  const [selectedEtapa, setSelectedEtapa] = useState<string>('all');
   const [selectedSkill, setSelectedSkill] = useState<string>('');
   
-  // Get unique skills across all schools
-  const allSkills = Array.from(
-    new Set(
-      schools.flatMap(school => 
-        school.performanceBySkill.map(skill => skill.skillCode)
-      )
-    )
-  ).sort();
+  // Estados para os dados do Supabase
+  const [escolas, setEscolas] = useState<School[]>([]);
+  const [desempenhoHabilidades, setDesempenhoHabilidades] = useState<SkillPerformance[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  console.log(escolas);
+  console.log(desempenhoHabilidades);
   
-  // Filter skills by subject if subject is selected
-  const filteredSkills = allSkills.filter(skillCode => {
-    if (selectedSubject === 'all') return true;
+  
+
+  // ADICIONE AQUI: Função para buscar dados do Supabase
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      
+     const { data: escolasData, error: escolasError } = await supabase.from('escolas').select('*');
+     if (escolasError) throw escolasError;
+     
+     const { data: desempenhoData, error: desempenhoError } = await supabase.from('desempenho_habilidades').select('*');
+     console.log(desempenhoData);
+     
+     if (desempenhoError) throw desempenhoError;
+     
+     
+     console.log(escolasData);
+     console.log(desempenhoData);
+     
+       setEscolas(escolasData);
+       setDesempenhoHabilidades(desempenhoData);
+      
+ 
+      
+    } catch (err) {
+      console.error('Erro ao buscar dados:', err);
+      setError('Erro ao carregar dados do banco');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  // Mapear habilidades H01-H21 para um array
+  const getHabilidadesFromDesempenho = (desempenho: SkillPerformance) => {
+    const habilidades = [];
+    for (let i = 1; i <= 21; i++) {
+      const key = `h${i.toString().padStart(2, '0')}` as keyof SkillPerformance;
+      const value = desempenho[key] as number;
+      if (value !== null && value !== undefined) {
+        habilidades.push({
+          skillCode: `H${i.toString().padStart(2, '0')}`,
+          percentCorrect: value,
+          subject: desempenho.componente_curricular,
+          etapa: desempenho.etapa,
+          escola: desempenho.escola
+        });
+      }
+    }
+    return habilidades;
+  };
+
+  // Obter lista única de componentes curriculares
+  const getUniqueSubjects = () => {
+    return Array.from(new Set(desempenhoHabilidades.map(d => d.componente_curricular))).sort();
+  };
+
+  // Obter lista única de etapas
+  const getUniqueEtapas = () => {
+    return Array.from(new Set(desempenhoHabilidades.map(d => d.etapa))).sort();
+  };
+
+  // Obter habilidades disponíveis baseadas nos filtros
+  const getAvailableSkills = () => {
+    let filteredData = desempenhoHabilidades;
     
-    return schools.some(school => 
-      school.performanceBySkill.some(skill => 
-        skill.skillCode === skillCode && skill.subject === selectedSubject
-      )
-    );
-  });
-  
-  // Calculate infrastructure impact data
+    if (selectedSubject !== 'all') {
+      filteredData = filteredData.filter(d => d.componente_curricular === selectedSubject);
+    }
+    
+    if (selectedEtapa !== 'all') {
+      filteredData = filteredData.filter(d => d.etapa === selectedEtapa);
+    }
+    
+    const allSkills = [];
+    for (let i = 1; i <= 21; i++) {
+      const skillCode = `H${i.toString().padStart(2, '0')}`;
+      const hasData = filteredData.some(d => {
+        const key = `h${i.toString().padStart(2, '0')}` as keyof SkillPerformance;
+        return d[key] !== null && d[key] !== undefined;
+      });
+      if (hasData) {
+        allSkills.push(skillCode);
+      }
+    }
+    
+    return allSkills;
+  };
+
+  // Calcular dados de impacto da infraestrutura
   const getInfrastructureImpactData = () => {
     if (!selectedSkill) return [];
     
-    const schoolsWithSkill = schools.filter(school => 
-      school.performanceBySkill.some(skill => skill.skillCode === selectedSkill)
-    );
+    const skillNumber = parseInt(selectedSkill.replace('H', ''));
+    const skillKey = `h${skillNumber.toString().padStart(2, '0')}` as keyof SkillPerformance;
     
-    const withInternet = schoolsWithSkill.filter(s => s.hasInternet);
-    const withoutInternet = schoolsWithSkill.filter(s => !s.hasInternet);
+    // Filtrar dados de desempenho baseado nos filtros selecionados
+    let filteredDesempenho = desempenhoHabilidades;
     
-    const withLibrary = schoolsWithSkill.filter(s => s.hasLibrary);
-    const withoutLibrary = schoolsWithSkill.filter(s => !s.hasLibrary);
+    if (selectedSubject !== 'all') {
+      filteredDesempenho = filteredDesempenho.filter(d => d.componente_curricular === selectedSubject);
+    }
     
-    const withLab = schoolsWithSkill.filter(s => s.hasLaboratory);
-    const withoutLab = schoolsWithSkill.filter(s => !s.hasLaboratory);
+    if (selectedEtapa !== 'all') {
+      filteredDesempenho = filteredDesempenho.filter(d => d.etapa === selectedEtapa);
+    }
+
+    const escolaMap = new Map(escolas.map(e => [e.nome, e]));
     
-    const withComputerLab = schoolsWithSkill.filter(s => s.hasComputerLab);
-    const withoutComputerLab = schoolsWithSkill.filter(s => !s.hasComputerLab);
-    
-    const getAveragePerformance = (schools: typeof schoolsWithSkill, skillCode: string) => {
-      if (schools.length === 0) return 0;
+    const calculateInfrastructureAverage = (hasInfrastructure: boolean, infrastructureField: keyof School) => {
+      const relevantSchools = filteredDesempenho.filter(d => {
+        const escola = escolaMap.get(d.escola);
+        return escola && escola[infrastructureField] === hasInfrastructure && d[skillKey] !== null;
+      });
       
-      const sum = schools.reduce((acc, school) => {
-        const skill = school.performanceBySkill.find(s => s.skillCode === skillCode);
-        return acc + (skill ? skill.percentCorrect : 0);
-      }, 0);
+      if (relevantSchools.length === 0) return 0;
       
-      return sum / schools.length;
+      const sum = relevantSchools.reduce((acc, d) => acc + (d[skillKey] as number), 0);
+      return sum / relevantSchools.length;
     };
-    
+
     return [
       {
         name: 'Internet',
-        with: getAveragePerformance(withInternet, selectedSkill),
-        without: getAveragePerformance(withoutInternet, selectedSkill),
-        difference: getAveragePerformance(withInternet, selectedSkill) - getAveragePerformance(withoutInternet, selectedSkill)
+        with: calculateInfrastructureAverage(true, 'acess_internet'),
+        without: calculateInfrastructureAverage(false, 'acess_internet'),
+        difference: calculateInfrastructureAverage(true, 'acess_internet') - calculateInfrastructureAverage(false, 'acess_internet')
       },
       {
         name: 'Biblioteca',
-        with: getAveragePerformance(withLibrary, selectedSkill),
-        without: getAveragePerformance(withoutLibrary, selectedSkill),
-        difference: getAveragePerformance(withLibrary, selectedSkill) - getAveragePerformance(withoutLibrary, selectedSkill)
-      },
-      {
-        name: 'Laboratório',
-        with: getAveragePerformance(withLab, selectedSkill),
-        without: getAveragePerformance(withoutLab, selectedSkill),
-        difference: getAveragePerformance(withLab, selectedSkill) - getAveragePerformance(withoutLab, selectedSkill)
+        with: calculateInfrastructureAverage(true, 'biblioteca'),
+        without: calculateInfrastructureAverage(false, 'biblioteca'),
+        difference: calculateInfrastructureAverage(true, 'biblioteca') - calculateInfrastructureAverage(false, 'biblioteca')
       },
       {
         name: 'Lab. Informática',
-        with: getAveragePerformance(withComputerLab, selectedSkill),
-        without: getAveragePerformance(withoutComputerLab, selectedSkill),
-        difference: getAveragePerformance(withComputerLab, selectedSkill) - getAveragePerformance(withoutComputerLab, selectedSkill)
+        with: calculateInfrastructureAverage(true, 'lab_info'),
+        without: calculateInfrastructureAverage(false, 'lab_info'),
+        difference: calculateInfrastructureAverage(true, 'lab_info') - calculateInfrastructureAverage(false, 'lab_info')
+      },
+      {
+        name: 'Ar Condicionado',
+        with: calculateInfrastructureAverage(true, 'ar_condicionado'),
+        without: calculateInfrastructureAverage(false, 'ar_condicionado'),
+        difference: calculateInfrastructureAverage(true, 'ar_condicionado') - calculateInfrastructureAverage(false, 'ar_condicionado')
       }
     ];
   };
-  
-  const infrastructureImpactData = getInfrastructureImpactData();
-  
-  // Get skill distribution data
+
+  // Obter distribuição de performance da habilidade
   const getSkillDistributionData = () => {
     if (!selectedSkill) return [];
+    
+    const skillNumber = parseInt(selectedSkill.replace('H', ''));
+    const skillKey = `h${skillNumber.toString().padStart(2, '0')}` as keyof SkillPerformance;
+    
+    let filteredData = desempenhoHabilidades;
+    
+    if (selectedSubject !== 'all') {
+      filteredData = filteredData.filter(d => d.componente_curricular === selectedSubject);
+    }
+    
+    if (selectedEtapa !== 'all') {
+      filteredData = filteredData.filter(d => d.etapa === selectedEtapa);
+    }
     
     const performanceLevels = [
       { name: 'Baixo (<60%)', count: 0, color: '#EF4444' },
@@ -100,13 +197,13 @@ const SkillAnalysis: React.FC = () => {
       { name: 'Alto (>80%)', count: 0, color: '#10B981' }
     ];
     
-    schools.forEach(school => {
-      const skill = school.performanceBySkill.find(s => s.skillCode === selectedSkill);
-      if (!skill) return;
+    filteredData.forEach(desempenho => {
+      const value = desempenho[skillKey] as number;
+      if (value === null || value === undefined) return;
       
-      if (skill.percentCorrect < 60) {
+      if (value < 60) {
         performanceLevels[0].count++;
-      } else if (skill.percentCorrect <= 80) {
+      } else if (value <= 80) {
         performanceLevels[1].count++;
       } else {
         performanceLevels[2].count++;
@@ -115,20 +212,35 @@ const SkillAnalysis: React.FC = () => {
     
     return performanceLevels;
   };
-  
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="text-gray-600">Carregando dados...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-red-50 border border-red-200 rounded-md p-4">
+        <div className="text-red-800">{error}</div>
+        <button 
+          onClick={fetchData}
+          className="mt-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+        >
+          Tentar novamente
+        </button>
+      </div>
+    );
+  }
+
+  const availableSubjects = getUniqueSubjects();
+  const availableEtapas = getUniqueEtapas();
+  const availableSkills = getAvailableSkills();
+  const infrastructureImpactData = getInfrastructureImpactData();
   const skillDistributionData = getSkillDistributionData();
-  
-  // Get skill description
-  const getSkillDescription = () => {
-    if (!selectedSkill) return '';
-    
-    const skill = schools
-      .flatMap(school => school.performanceBySkill)
-      .find(skill => skill.skillCode === selectedSkill);
-    
-    return skill ? skill.description : '';
-  };
-  
+
   return (
     <div className="space-y-6">
       <div>
@@ -140,7 +252,7 @@ const SkillAnalysis: React.FC = () => {
       
       {/* Filters */}
       <Card>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div>
             <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-1">
               Componente Curricular
@@ -155,11 +267,33 @@ const SkillAnalysis: React.FC = () => {
               }}
             >
               <option value="all">Todos</option>
-              <option value="math">Matemática</option>
-              <option value="portuguese">Língua Portuguesa</option>
-              <option value="science">Ciências</option>
-              <option value="history">História</option>
-              <option value="geography">Geografia</option>
+              {availableSubjects.map(subject => (
+                <option key={subject} value={subject}>
+                  {subject}
+                </option>
+              ))}
+            </select>
+          </div>
+          
+          <div>
+            <label htmlFor="etapa" className="block text-sm font-medium text-gray-700 mb-1">
+              Etapa
+            </label>
+            <select
+              id="etapa"
+              className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              value={selectedEtapa}
+              onChange={(e) => {
+                setSelectedEtapa(e.target.value);
+                setSelectedSkill(''); // Reset skill when etapa changes
+              }}
+            >
+              <option value="all">Todas</option>
+              {availableEtapas.map(etapa => (
+                <option key={etapa} value={etapa}>
+                  {etapa}
+                </option>
+              ))}
             </select>
           </div>
           
@@ -172,10 +306,10 @@ const SkillAnalysis: React.FC = () => {
               className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               value={selectedSkill}
               onChange={(e) => setSelectedSkill(e.target.value)}
-              disabled={filteredSkills.length === 0}
+              disabled={availableSkills.length === 0}
             >
               <option value="">Selecione uma habilidade</option>
-              {filteredSkills.map(skillCode => (
+              {availableSkills.map(skillCode => (
                 <option key={skillCode} value={skillCode}>
                   {skillCode}
                 </option>
@@ -188,12 +322,6 @@ const SkillAnalysis: React.FC = () => {
       {/* Skill Analysis */}
       {selectedSkill ? (
         <>
-          {/* Skill Description */}
-          <Card>
-            <h2 className="text-lg font-medium text-gray-900 mb-1">Descrição da Habilidade</h2>
-            <p className="text-gray-600">{getSkillDescription()}</p>
-          </Card>
-          
           {/* Charts & Analysis */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Performance Distribution */}

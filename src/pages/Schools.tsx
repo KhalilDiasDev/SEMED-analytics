@@ -17,7 +17,6 @@ const Schools: React.FC = () => {
       fetchSchools();
     }, []);
   
-    console.log(schools);
     
   
   return (
