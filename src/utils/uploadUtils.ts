@@ -1,35 +1,57 @@
 // utils/uploadUtils.ts
+import { SkillPerformance } from '../types';
 import { SchoolData, PerformanceData, ValidationResult } from '../types/upload';
 
-// Utilitários de conversão
-export const parseBoolean = (value: string): boolean => {
-  const lowercaseValue = value.toLowerCase().trim();
-  return lowercaseValue === 'true' || lowercaseValue === 'sim' || lowercaseValue === '1' || lowercaseValue === 's';
+// Funções de parsing corrigidas para maior robustez
+export const parseBoolean = (value: any): boolean => {
+  // Verifica se o valor é null, undefined ou vazio
+  if (value === null || value === undefined || value === '') {
+    return false;
+  }
+  
+  // Converte para string se não for uma string
+  const stringValue = String(value).toLowerCase().trim();
+  
+  return stringValue === 'true' || 
+         stringValue === 'sim' || 
+         stringValue === '1' || 
+         stringValue === 's' ||
+         stringValue === 'yes';
 };
 
-export const parseNumber = (value: string): number => {
-  const parsed = parseFloat(value);
+export const parseNumber = (value: any): number => {
+  // Verifica se o valor é null, undefined ou vazio
+  if (value === null || value === undefined || value === '') {
+    return 0;
+  }
+  
+  const parsed = parseFloat(String(value));
   return isNaN(parsed) ? 0 : parsed;
 };
 
 // Função para processar percentuais (remove % se existir)
-export const parsePercentage = (value: string): number => {
-  if (!value) return 0;
-  const cleanValue = value.toString().replace('%', '').trim();
+export const parsePercentage = (value: any): number => {
+  if (value === null || value === undefined || value === '') {
+    return 0;
+  }
+  
+  const cleanValue = String(value).replace('%', '').trim();
   const parsed = parseFloat(cleanValue);
   return isNaN(parsed) ? 0 : parsed;
 };
 
 // Função para normalizar nomes de escolas (remove acentos, espaços extras, etc.)
-export const normalizeSchoolName = (name: string): string => {
-  return name
-    .toLowerCase()
+export const normalizeSchoolName = (name: any): string => {
+  if (name === null || name === undefined || name === '') {
+    return '';
+  }
+  
+  return String(name)
     .trim()
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '') // Remove acentos
     .replace(/\s+/g, ' '); // Remove espaços extras
 };
-
 // Processamento de dados das escolas
 export const processSchoolData = (data: any[]): SchoolData[] => {
   return data.map(row => ({
@@ -65,7 +87,7 @@ export const processPerformanceData = (
     existingSchools.map(school => normalizeSchoolName(school.nome))
   );
   
-  const processedData: PerformanceData[] = [];
+  const processedData: SkillPerformance[] = [];
   const skippedSchools: string[] = [];
   const uniqueSkippedSchools = new Set<string>();
   
